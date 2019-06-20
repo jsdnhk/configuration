@@ -129,6 +129,14 @@
     - install
     - install:base
 
+- name: create user api access request
+  shell: >
+    {{ COMMON_BIN_DIR }}/python.edxapp {{ COMMON_BIN_DIR }}/manage.edxapp lms --settings={{ COMMON_EDXAPP_SETTINGS }}
+    create_api_access_request
+    --username {{ item.username }}
+  become_user: "{{ edxapp_user }}"
+  environment: "{{ edxapp_environment }}"
+
 # Set up the python sandbox execution environment
 - include: python_sandbox_env.yml
   when: EDXAPP_PYTHON_SANDBOX
