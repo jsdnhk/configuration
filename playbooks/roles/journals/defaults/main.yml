@@ -48,10 +48,6 @@ JOURNALS_MYSQL: 'localhost'
 JOURNALS_MYSQL_USER: 'journ001'
 JOURNALS_MYSQL_PASSWORD: 'password'
 
-# use port 9500 as elasticsearch5 will be run in docker container on this port
-JOURNALS_ELASTICSEARCH_URL: 'http://127.0.0.1:9500'
-JOURNALS_ELASTICSEARCH_INDEX_NAME: 'journals'
-
 JOURNALS_MEMCACHE: [ 'memcache' ]
 
 JOURNALS_VERSION: "master"
@@ -62,28 +58,12 @@ JOURNALS_LOGOUT_URL: '{{ JOURNALS_URL_ROOT }}/logout/'
 
 JOURNALS_SECRET_KEY: 'Your secret key here'
 
-JOURNALS_LANGUAGE_CODE: 'en'
-
-## Configuration for django-parler package. For more information visit
-## https://django-parler.readthedocs.io/en/latest/configuration.html#parler-languages
-JOURNALS_PARLER_DEFAULT_LANGUAGE_CODE: '{{JOURNALS_LANGUAGE_CODE}}'
-JOURNALS_PARLER_LANGUAGES :
-  1:
-    - code: 'en'
-  default:
-    fallbacks:
-      - '{{JOURNALS_PARLER_DEFAULT_LANGUAGE_CODE}}'
-    hide_untranslated: 'False'
-
-JOURNALS_DEFAULT_PARTNER_ID: 1
 JOURNALS_SESSION_EXPIRE_AT_BROWSER_CLOSE: false
 
 # Used to automatically configure OAuth2 Client
 JOURNALS_SOCIAL_AUTH_EDX_OIDC_KEY : 'journals-key'
 JOURNALS_SOCIAL_AUTH_EDX_OIDC_SECRET : 'journals-secret'
 JOURNALS_SOCIAL_AUTH_REDIRECT_IS_HTTPS: false
-
-JOURNALS_PLATFORM_NAME: 'Your Platform Name Here'
 
 JOURNALS_DATA_DIR: '{{ COMMON_DATA_DIR }}/{{ journals_service_name }}'
 JOURNALS_MEDIA_ROOT: '{{ JOURNALS_DATA_DIR }}/media'
@@ -95,25 +75,6 @@ JOURNALS_MEDIA_STORAGE_BACKEND:
   MEDIA_URL: '{{ JOURNALS_MEDIA_URL }}'
 
 JOURNALS_STATICFILES_STORAGE: 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-# You can set different email backends with django:
-# https://docs.djangoproject.com/en/1.9/topics/email/#email-backends
-JOURNALS_EMAIL_BACKEND: 'django_ses.SESBackend'
-
-# For email backend django-ses, the following settings are required
-JOURNALS_AWS_SES_REGION_NAME: 'us-east-1'
-JOURNALS_AWS_SES_REGION_ENDPOINT: 'email.us-east-1.amazonaws.com'
-
-# For default email backend SMTP, following settings are required
-JOURNALS_EMAIL_HOST: 'localhost'
-JOURNALS_EMAIL_PORT: 25
-JOURNALS_EMAIL_USE_TLS: False
-JOURNALS_EMAIL_HOST_USER: ''
-JOURNALS_EMAIL_HOST_PASSWORD: ''
-
-JOURNALS_PUBLISHER_FROM_EMAIL: !!null
-
-JOURNALS_OPENEXCHANGERATES_API_KEY: ''
 
 JOURNALS_GUNICORN_EXTRA: ''
 
@@ -128,40 +89,9 @@ JOURNALS_REPOS:
     DESTINATION: "{{ journals_code_dir }}"
     SSH_KEY: "{{ JOURNALS_GIT_IDENTITY }}"
 
-journals_service_config_overrides:
-  ELASTICSEARCH_URL: '{{ JOURNALS_ELASTICSEARCH_URL }}'
-  ELASTICSEARCH_INDEX_NAME: '{{ JOURNALS_ELASTICSEARCH_INDEX_NAME }}'
-
-  PLATFORM_NAME: '{{ JOURNALS_PLATFORM_NAME }}'
-
-  DEFAULT_PARTNER_ID: '{{ JOURNALS_DEFAULT_PARTNER_ID }}'
-
-  EMAIL_BACKEND: '{{ JOURNALS_EMAIL_BACKEND }}'
-
-  # Settings for django-ses email backend
-  AWS_SES_REGION_NAME: '{{ JOURNALS_AWS_SES_REGION_NAME }}'
-  AWS_SES_REGION_ENDPOINT: '{{ JOURNALS_AWS_SES_REGION_ENDPOINT }}'
-
-  # Settings for default django SMTP email backend
-  EMAIL_HOST: '{{ JOURNALS_EMAIL_HOST }}'
-  EMAIL_PORT: '{{ JOURNALS_EMAIL_PORT }}'
-  EMAIL_USE_TLS: '{{ JOURNALS_EMAIL_USE_TLS }}'
-  EMAIL_HOST_USER: '{{ JOURNALS_EMAIL_HOST_USER }}'
-  EMAIL_HOST_PASSWORD: '{{ JOURNALS_EMAIL_HOST_PASSWORD }}'
-
-  PUBLISHER_FROM_EMAIL: '{{ JOURNALS_PUBLISHER_FROM_EMAIL }}'
-
-  OPENEXCHANGERATES_API_KEY: '{{ JOURNALS_OPENEXCHANGERATES_API_KEY }}'
-
-  LANGUAGE_CODE: '{{JOURNALS_LANGUAGE_CODE}}'
-  PARLER_DEFAULT_LANGUAGE_CODE: '{{JOURNALS_PARLER_DEFAULT_LANGUAGE_CODE}}'
-  PARLER_LANGUAGES : '{{JOURNALS_PARLER_LANGUAGES}}'
-  CSRF_COOKIE_SECURE: "{{ JOURNALS_CSRF_COOKIE_SECURE }}"
-
 # See edx_django_service_automated_users for an example of what this should be
 JOURNALS_AUTOMATED_USERS: {}
 
-JOURNALS_CSRF_COOKIE_SECURE: false
 JOURNALS_CORS_ORIGIN_WHITELIST: []
 JOURNALS_ALLOW_CORS_HEADERS: true
 JOURNALS_ALLOW_CORS_CREDENTIALS: true
