@@ -229,6 +229,7 @@ edx_ansible_source_repo: ${configuration_source_repo}
 edx_platform_repo: ${edx_platform_repo}
 
 EDXAPP_PLATFORM_NAME: $sandbox_platform_name
+COMMON_SANDBOX_BUILD: True
 
 EDXAPP_STATIC_URL_BASE: $static_url_base
 EDXAPP_LMS_NGINX_PORT: 80
@@ -387,7 +388,7 @@ REGISTRAR_DISCOVERY_BASE_URL: "https://discovery-${deploy_host}"
 REGISTRAR_LMS_BASE_URL: "https://${deploy_host}"
 REGISTRAR_SOCIAL_AUTH_REDIRECT_IS_HTTPS: true
 
-LEARNER_PORTAL_URL_ROOT: "https://learner_portal-${deploy_host}"
+LEARNER_PORTAL_URL_ROOT: "https://learner-portal-${deploy_host}"
 LEARNER_PORTAL_DISCOVERY_BASE_URL: "https://discovery-${deploy_host}"
 LEARNER_PORTAL_LMS_BASE_URL: "https://${deploy_host}"
 
