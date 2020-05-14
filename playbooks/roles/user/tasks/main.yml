@@ -148,6 +148,26 @@
   retries: 5
   with_items: "{{ user_info }}"
 
+- name: Create ~/.ssh directory for non github users
+  file:
+    path: "/home/{{ item.name }}/.ssh" 
+    state: directory 
+    mode: "0755"
+    owner: "{{ item.name }}" 
+    group: "{{ item.name }}"
+  when: item.authorized_keys is defined and item.get('state', 'present') == 'present'
+  with_items: "{{ user_info }}"
+
+- name: Build authorized_keys file for non github users
+  template:
+    src: "templates/authorized_keys.j2"
+    dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+    mode: "0600"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  with_items: "{{ user_info }}"
+  when: item.authorized_keys is defined and item.get('state', 'present') == 'present'
+
 - name: Create bashrc file for normal users
   template: 
     src: default.bashrc.j2
@@ -225,3 +245,29 @@
   with_nested:
     - "{{ user_info }}"
     - "{{ user_rbash_links }}"
+
+- name: Allow users to ssh
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "#users_allowed_to_ssh {{ vars['user_info'] }}"
+    line: "AllowUsers {{ (( user_info | map(attribute='name') | list ) + [ ansible_ssh_user ]) | join(' ') }} #users_allowed_to_ssh {{ vars['user_info'] }}"
+  when: user_info|length > 0
+  register: users_ssh_access
+
+- name: Restart ssh (ubuntu/debian)
+  service:
+    name: ssh
+    state: restarted
+  become: True
+  when: >
+    users_ssh_access.changed and
+    ansible_distribution in common_debian_variants
+
+- name: Restart ssh (redhat)
+  service:
+    name: sshd
+    state: restarted
+  become: True
+  when: >
+    users_ssh_access.changed and
+    ansible_distribution in common_redhat_variants

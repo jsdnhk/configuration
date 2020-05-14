@@ -70,13 +70,6 @@ localdev_accounts:
       }
 
     - {
-        user: "{{ journals_user|default('None') }}",
-        home: "{{ journals_home|default('None') }}",
-        env: "journals_env",
-        repo: "journals"
-      }
-
-    - {
         user: "{{ registrar_user|default('None') }}",
         home: "{{ registrar_home|default('None') }}",
         env: "registrar_env",
@@ -103,4 +96,5 @@ local_dev_pkgs:
     - openbox
     - libffi-dev
 
-localdev_jscover_version: "1.0.2"
+LOCALDEV_JSCOVER_VERSION: "1.0.2"
+localdev_jscover_version: "{{ LOCALDEV_JSCOVER_VERSION }}"

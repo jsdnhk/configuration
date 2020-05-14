@@ -63,16 +63,17 @@ RUN usermod -aG docker go
 # Assign the go user root privlidges
 RUN printf "\ngo      ALL=(ALL:ALL) NOPASSWD: /usr/bin/pip, /usr/local/bin/pip\n" >> /etc/sudoers
 RUN printf "\ngo      ALL=(ALL:ALL) NOPASSWD: /usr/bin/pip3, /usr/local/bin/pip3\n" >> /etc/sudoers
+RUN printf "\ngo      ALL=(ALL:ALL) NOPASSWD: /usr/bin/pip3.6\n" >> /etc/sudoers
 
 # Upgrade pip and setup tools. Needed for Ansible 2.x
 RUN \
-  pip3 install --upgrade pip==9.0.3 && \
-  pip2 install --upgrade pip==9.0.3 && \
+  pip3 install --upgrade pip==20.0.2 && \
+  pip2 install --upgrade pip==20.0.2 && \
   #pip may have moved from /usr/bin/ to /usr/local/bin/. This clears bash's path cache.
   hash -r && \
   # upgrade setuptools early to avoid no distribution errors
-  pip install --upgrade setuptools==39.0.1 && \
-  pip3 install --upgrade setuptools==39.0.1
+  pip install --upgrade setuptools==44.1.0 && \
+  pip3 install --upgrade setuptools==44.1.0
 
 # Compile python 3.6 for Zappa, as zappa requires python 2.7 or 3.6.
 # There is no bionic GOCD official image published to base off of, and there is no official 3.6 python package for ubuntu 14.04 or 16.04
@@ -84,6 +85,9 @@ RUN apt-get update && apt-get install zlib1g-dev wget lsb-core -qy && cd /opt &&
 
 # Install AWS command-line interface - for AWS operations in a go-agent task.
 RUN pip install 'awscli>=1.11.58'
+
+# Install pip on python3.6 to install asym-crypto-yaml which requires python >= 3.6
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.6 get-pip.py
 
 # !!!!NOTICE!!!! ---- Runner of this pipeline take heed!! You must replace go_github_key.pem with the REAL key material
 # that can checkout private github repositories used as pipeline materials. The key material here is faked and is only
