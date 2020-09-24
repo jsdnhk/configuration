@@ -111,12 +111,12 @@ sudo -H pip install --upgrade virtualenv==16.7.10
 ## individually, or with $OPENEDX_RELEASE.
 ##
 VERSION_VARS=(
-    edx_platform_version
-    certs_version
-    forum_version
+    EDX_PLATFORM_VERSION
+    CERTS_VERSION
+    FORUM_VERSION
     XQUEUE_VERSION
-    configuration_version
-    demo_version
+    CONFIGURATION_VERSION
+    DEMO_VERSION
     NOTIFIER_VERSION
     INSIGHTS_VERSION
     ANALYTICS_API_VERSION
@@ -174,7 +174,7 @@ if [[ $ansible_status -ne 0 ]]; then
     echo " "
     echo "Decoded error:"
     # Find the FAILED line before the "to retry," line, and decode it.
-    awk '/to retry,/{if (bad) print bad} /FAILED/{bad=$0}' $log_file | python3 /var/tmp/configuration/util/ansible_msg.py
+    awk '/to +retry,/{if (bad) print bad} /FAILED/{bad=$0}' $log_file | python3 /var/tmp/configuration/util/ansible_msg.py
     echo " "
     echo "============================================================"
     echo "Installation failed!"

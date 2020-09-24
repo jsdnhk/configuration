@@ -83,6 +83,7 @@ ECOMMERCE_SOCIAL_AUTH_REDIRECT_IS_HTTPS: false
 # Settings for affiliate cookie tracking
 ECOMMERCE_AFFILIATE_COOKIE_NAME: '{{ EDXAPP_AFFILIATE_COOKIE_NAME | default("dev_affiliate_id") }}'
 
+ECOMMERCE_OSCAR_DEFAULT_CURRENCY: 'USD'
 ECOMMERCE_OSCAR_FROM_EMAIL: 'oscar@example.com'
 
 # NOTE: The contents of the certificates should be set in private configuration
@@ -197,6 +198,7 @@ ECOMMERCE_USERNAME_REPLACEMENT_WORKER: "OVERRIDE THIS WITH A VALID USERNAME"
 ecommerce_service_config_overrides:
   LANGUAGE_COOKIE_NAME: '{{ ECOMMERCE_LANGUAGE_COOKIE_NAME }}'
   EDX_API_KEY: '{{ ECOMMERCE_EDX_API_KEY }}'
+  OSCAR_DEFAULT_CURRENCY: '{{ ECOMMERCE_OSCAR_DEFAULT_CURRENCY }}'
   OSCAR_FROM_EMAIL: '{{ ECOMMERCE_OSCAR_FROM_EMAIL }}'
 
   ENTERPRISE_SERVICE_URL: '{{ ECOMMERCE_ENTERPRISE_URL }}/enterprise/'
@@ -294,7 +296,7 @@ ECOMMERCE_ADMIN_URLS:
 ECOMMERCE_ENABLE_NEWRELIC_DISTRIBUTED_TRACING: false
 
 # Python 3 conversion
-ECOMMERCE_USE_PYTHON3: true
+ECOMMERCE_USE_PYTHON38: true
 
 #
 # OS packages
@@ -306,8 +308,14 @@ ecommerce_debian_pkgs:
   - libssl-dev
   - libffi-dev
   - libsqlite3-dev
-  - python-dev
   - python3-dev
+
+ecommerce_release_specific_debian_pkgs:
+  xenial:
+    - python-dev
+  bionic:
+    - python-dev
+  focal: []
 
 ecommerce_redhat_pkgs: []
 

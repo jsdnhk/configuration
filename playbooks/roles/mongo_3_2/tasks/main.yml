@@ -25,7 +25,7 @@
   pip:
     name: pymongo
     state: present
-    version: "{{ pymongo_version }}"
+    version: "{{ PYMONGO_VERSION }}"
     extra_args: "-i {{ COMMON_PYPI_MIRROR_URL }}"
   tags:
     - "install"
@@ -33,7 +33,7 @@
 
 - name: add the mongodb signing key
   apt_key:
-    url: "https://www.mongodb.org/static/pgp/server-{{ mongo_version_major_minor }}.asc"
+    url: "https://www.mongodb.org/static/pgp/server-{{ MONGO_VERSION_MAJOR_MINOR }}.asc"
     state: present
   retries: 3
   tags:
@@ -369,6 +369,37 @@
     - "manage:db"
     - "manage:db-users"
     - "manage:db-replication"
+
+- name: systemd mongod service override dir exists
+  file:
+    path: "/etc/systemd/system/mongod.service.d/"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  tags:
+    - "install"
+    - "install:configuration"
+
+- name: copy mongod service override file
+  copy:
+    src: "etc/systemd/system/mongod.service.d/restart.conf"
+    dest: "/etc/systemd/system/mongod.service.d/restart.conf"
+    owner: root
+    group: root
+    mode: 0644
+  register: mongod_service_override
+  tags:
+    - "install"
+    - "install:configuration"
+
+- name: reload systemd if override files changed
+  command:
+    cmd: "systemctl daemon-reload"
+  when: mongod_service_override.changed
+  tags:
+    - "install"
+    - "install:configuration"
 
 - name: ensure mongo starts at boot time
   service:

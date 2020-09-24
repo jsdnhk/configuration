@@ -1,7 +1,6 @@
 ---
 
 JENKINS_TOOLS_VERSION: "1.651.3"
-jenkins_tools_version: "{{ JENKINS_TOOLS_VERSION }}"
 
 jenkins_tools_plugins:
   - { name: "cloudbees-folder", version: "5.12" }
@@ -76,5 +75,5 @@ jenkins_tools_debian_pkgs:
     - daemon
     - python-pycurl
     - psmisc
-    - mysql-client-core-5.6
+    - mysql-client-core-5.7
     - ruby-sass

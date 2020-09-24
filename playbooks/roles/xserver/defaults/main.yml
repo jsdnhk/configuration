@@ -44,10 +44,7 @@ xserver_source_repo: "git://github.com/edx/xserver.git"
 # This should probably be overridden in the playbook or groupvars
 # with the default pointing to the head of master.
 XSERVER_VERSION: master
-xserver_version: "{{ XSERVER_VERSION }}"
 XSERVER_GRADER_VERSION: master
-xserver_grader_version: "{{ XSERVER_GRADER_VERSION }}"
-
 
 xserver_requirements_file: "{{ xserver_code_dir }}/requirements/base.txt"
 
@@ -55,7 +52,7 @@ xserver_gunicorn_port: 8050
 xserver_gunicorn_host: 'localhost'
 xserver_gunicorn_workers: "{{ ansible_processor|length }}"
 
-xserver_debian_pkgs:
+xserver_debian_pkgs_default:
   - build-essential
   - gcc
   - gfortran
@@ -64,5 +61,14 @@ xserver_debian_pkgs:
   - libxml2-dev
   - libxml2-utils
   - libxslt1-dev
-  - python-dev
   - apparmor-utils
+
+xserver_release_specific_debian_pkgs:
+  xenial:
+    - python-dev
+  bionic:
+    - python-dev
+  focal:
+    - python3-dev
+
+xserver_debian_pkgs: "{{ xserver_debian_pkgs_default + xserver_release_specific_debian_pkgs[ansible_distribution_release] }}"

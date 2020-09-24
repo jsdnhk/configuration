@@ -106,9 +106,7 @@ COMMON_ENABLE_NEWRELIC_APP: False
 COMMON_ENABLE_MINOS: False
 COMMON_TAG_EC2_INSTANCE: False
 COMMON_BOTO_VERSION: '2.48.0'
-common_boto_version: "{{ COMMON_BOTO_VERSION }}"
 COMMON_NODE_VERSION: '12.13.0'
-common_node_version: "{{ COMMON_NODE_VERSION }}"
 common_redhat_pkgs:
   - ntp
   - lynx
@@ -117,7 +115,8 @@ common_redhat_pkgs:
   - git
   - unzip
   - acl
-common_debian_pkgs:
+
+common_debian_pkgs_default:
   - apt-transport-https
   - ntp
   - acl
@@ -127,8 +126,20 @@ common_debian_pkgs:
   - rsyslog
   - git
   - unzip
-  - python-pip
-  - python2.7-dev
+  - net-tools
+  - python3-pip
+
+common_release_specific_debian_pkgs:
+  xenial:
+    - python-pip
+    - python2.7-dev
+  bionic:
+    - python-pip
+    - python3.5-dev
+  focal:
+    - python3.5-dev
+
+common_debian_pkgs: "{{ common_debian_pkgs_default + common_release_specific_debian_pkgs[ansible_distribution_release] }}"
 
 common_debian_devstack_pkgs:
   - watchman
@@ -139,10 +150,9 @@ old_python_debian_pkgs:
 
 
 COMMON_PIP_VERSION: '20.0.2'
-common_pip_version: "{{ COMMON_PIP_VERSION }}"
 
 common_pip_pkgs:
-  - pip=={{ common_pip_version }}
+  - pip=={{ COMMON_PIP_VERSION }}
   - setuptools==44.1.0
   - virtualenv==16.7.10
   - boto3
@@ -278,3 +288,6 @@ CONFIGURE_JWTS: false
 
 # Variable to control setting up the retirement services
 COMMON_RETIREMENT_SERVICE_SETUP: false
+
+# How to log in as "lms" to xqueue.
+COMMON_XQUEUE_LMS_PASSWORD: password

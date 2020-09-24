@@ -82,10 +82,16 @@ localdev_accounts:
         repo: "learner_portal"
       }
     - {
-        user: "{{ program_manager_user|default('None') }}",
-        home: "{{ program_manager_home|default('None') }}",
-        env: "program_manager_env",
-        repo: "program_manager"
+        user: "{{ program_console_user|default('None') }}",
+        home: "{{ program_console_home|default('None') }}",
+        env: "program_console_env",
+        repo: "program_console"
+      }
+    - {
+        user: "{{ prospectus_user|default('None') }}",
+        home: "{{ prospectus_home|default('None') }}",
+        env: "prospectus_env",
+        repo: "prospectus"
       }
 
 # Helpful system packages for local dev
@@ -97,4 +103,3 @@ local_dev_pkgs:
     - libffi-dev
 
 LOCALDEV_JSCOVER_VERSION: "1.0.2"
-localdev_jscover_version: "{{ LOCALDEV_JSCOVER_VERSION }}"

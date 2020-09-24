@@ -27,11 +27,12 @@
     - { path: "{{ edxapp_theme_dir }}" }
     - { path: "{{ edxapp_staticfile_dir }}" }
     - { path: "{{ edxapp_course_static_dir }}" }
-    - { path: "{{ edxapp_course_data_dir }}" }
     # var should have more permissive permissions than the rest
     - { path: "{{ edxapp_data_dir }}", mode: "0775" }
     # directory to import the courses from github
     - { path: "{{ EDXAPP_GIT_REPO_DIR }}", mode: "0775" }
+    # directory to export the courses to git
+    - { path: "{{ EDXAPP_GIT_REPO_EXPORT_DIR }}", mode: "0775" }
   tags:
     - install
     - install:base
@@ -125,7 +126,7 @@
 
 - name: Install the nodejs LTS repos
   apt_repository:
-    repo: "deb https://deb.nodesource.com/node_{{ edxapp_node_version }}.x {{ ansible_distribution_release }} main"
+    repo: "deb https://deb.nodesource.com/node_{{ EDXAPP_NODE_VERSION }}.x {{ ansible_distribution_release }} main"
     state: present
     update_cache: yes
   tags:

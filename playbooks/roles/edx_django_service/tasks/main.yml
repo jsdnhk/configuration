@@ -61,6 +61,21 @@
     - install
     - install:configuration
 
+- name: add deadsnakes repo
+  apt_repository:
+      repo: ppa:deadsnakes/ppa
+  when: edx_django_service_use_python38 and not edx_django_service_enable_experimental_docker_shim
+
+- name: install python3.8
+  apt:
+    pkg:
+      - python3.8-dev
+      - python3.8-distutils
+  when: edx_django_service_use_python38 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
 - name: install python3
   apt:
     name: "{{ item }}"
@@ -72,12 +87,22 @@
     - install
     - install:system-requirements
 
+- name: build virtualenv with python3.8
+  command: "virtualenv --python=python3.8 {{ edx_django_service_venv_dir }}"
+  args:
+    creates: "{{ edx_django_service_venv_dir }}/bin/pip"
+  become_user: "{{ edx_django_service_user }}"
+  when: edx_django_service_use_python38 and not edx_django_service_enable_experimental_docker_shim
+  tags:
+    - install
+    - install:system-requirements
+
 - name: build virtualenv with python3
   command: "virtualenv --python=python3 {{ edx_django_service_venv_dir }}"
   args:
     creates: "{{ edx_django_service_venv_dir }}/bin/pip"
   become_user: "{{ edx_django_service_user }}"
-  when: edx_django_service_use_python3 and not edx_django_service_enable_experimental_docker_shim
+  when: edx_django_service_use_python3 and not edx_django_service_use_python38 and not edx_django_service_enable_experimental_docker_shim
   tags:
     - install
     - install:system-requirements
@@ -87,13 +112,13 @@
   args:
     creates: "{{ edx_django_service_venv_dir }}/bin/pip"
   become_user: "{{ edx_django_service_user }}"
-  when: not edx_django_service_use_python3 and not edx_django_service_enable_experimental_docker_shim
+  when: not edx_django_service_use_python3 and not edx_django_service_use_python38 and not edx_django_service_enable_experimental_docker_shim
   tags:
     - install
     - install:system-requirements
 
 - name: Pin pip to a specific version.
-  command: "{{ edx_django_service_venv_dir }}/bin/pip install pip=={{ common_pip_version }}"
+  command: "{{ edx_django_service_venv_dir }}/bin/pip install pip=={{ COMMON_PIP_VERSION }}"
   become_user: "{{ edx_django_service_user }}"
   when: not edx_django_service_enable_experimental_docker_shim
   tags:
@@ -125,7 +150,6 @@
 - name: upgrade npm
   command: "npm install -g npm@{{ edx_django_service_npm_version }}"
   become_user: "{{ edx_django_service_user }}"
-  when: not edx_django_service_enable_experimental_docker_shim
   environment: "{{ edx_django_service_environment }}"
   tags:
     - install
@@ -407,3 +431,7 @@
      app_config_owner: root
      app_config_group: root
      app_config_mode: 0644
+
+- name: Create docker shim flag file
+  command: "touch /edx/etc/docker_shim_enabled"
+  when: edx_django_service_enable_experimental_docker_shim

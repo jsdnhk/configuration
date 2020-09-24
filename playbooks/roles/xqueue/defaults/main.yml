@@ -45,7 +45,7 @@ XQUEUE_SWIFT_REGION_NAME: !!null
 XQUEUE_BASIC_AUTH_USER: "{{ COMMON_HTPASSWD_USER }}"
 XQUEUE_BASIC_AUTH_PASSWORD: "{{ COMMON_HTPASSWD_PASS }}"
 XQUEUE_DJANGO_USERS:
-  lms: 'password'
+  lms: "{{ COMMON_XQUEUE_LMS_PASSWORD }}"
 XQUEUE_LANG: 'en_US.UTF-8'
 
 XQUEUE_MYSQL_DB_NAME: 'xqueue'
@@ -161,6 +161,7 @@ xqueue_environment:
   DJANGO_SETTINGS_MODULE: 'xqueue.{{ XQUEUE_SETTINGS }}'
   PATH: '{{ xqueue_venv_bin }}:{{ ansible_env.PATH }}'
   XQUEUE_CFG: '{{ COMMON_CFG_DIR }}/xqueue.yml'
+  SETUPTOOLS_USE_DISTUTILS: "stdlib" # https://setuptools.readthedocs.io/en/latest/history.html#v50-0-0
 
 xqueue_requirements_file:      "{{ xqueue_code_dir }}/requirements.txt"
 xqueue_openstack_requirements_file: "{{ xqueue_code_dir }}/openstack-requirements.txt"
@@ -178,9 +179,15 @@ xqueue_debian_pkgs:
   - libmysqlclient-dev
   - ntp
   # Needed to be able to create the xqueue mysqldb.
-  - python-mysqldb
   # Needed to be able to build wheel for mysqlclient
   - python3-dev
+xqueue_release_specific_debian_pkgs:
+  xenial:
+    - python-mysqldb
+  bionic:
+    - python-mysqldb
+  focal:
+    - python3-mysqldb
 
 # flag to run xqueue on python3
 xqueue_use_python3: true
